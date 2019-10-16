@@ -2,17 +2,15 @@ from NodeAndEdge import *
 import random
 
 
-def generate_big_graph(node_num, lower_bound, high_bound, request_num, depot_num):
+def generate_big_graph(common_graph, node_num, request_num, depot_num):
     """
-
+    :param common_graph: origin graph
     :param node_num: the number of node
-    :param lower_bound: the lower bound of coordinate of node
-    :param high_bound: the high bound of coordinate of node
     :param request_num: the number of request
     :param depot_num: the number of depot
     :return:
     """
-    common_graph = generate_common_graph(node_num, lower_bound, high_bound)
+    random.seed(111)
     uncommon_node_num = 2 * request_num + depot_num + 2
     assert uncommon_node_num <= node_num, "uncommon_node_num must be less than node_num!"
     node_serials = random.sample(range(0, node_num), uncommon_node_num)
@@ -42,6 +40,11 @@ def generate_big_graph(node_num, lower_bound, high_bound, request_num, depot_num
 
 
 def generate_common_graph(node_num, lower_bound, high_bound):
+    """
+    :param lower_bound: the lower bound of coordinate of node
+    :param high_bound: the high bound of coordinate of node
+    :return:
+    """
     # 生成一个普通的大图，图中各个点并没有属性
     # 参数: 节点数量 坐标范围下界 坐标范围上界
     result = []

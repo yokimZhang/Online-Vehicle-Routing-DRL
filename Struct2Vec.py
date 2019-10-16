@@ -40,7 +40,7 @@ class struct2vec_model(nn.Module):
 
 def Struct2Vec(graph, p_dim=128, R=4):
     # R denotes the iterations of var mu
-    node_list = graph.copy()  # 小图的节点列表
+    node_list = graph  # 小图的节点列表
     ser_num_list = []  # mapping table
 
     for node in node_list:
@@ -52,8 +52,8 @@ def Struct2Vec(graph, p_dim=128, R=4):
             edge.to = ser_num_list.index(edge.to)
 
     # print the type of node
-    for node in node_list:
-        print(node.type.name, node.serial_number)
+    # for node in node_list:
+    #     print(node.type.name, node.serial_number)
 
     node_num = len(node_list)  # 小图的节点总数
 
@@ -115,18 +115,20 @@ def Struct2Vec(graph, p_dim=128, R=4):
 
         # print(list(struct2vec.named_parameters()))
 
-        return x_all, mu_all, ser_num_list
+        return x_all, mu_all.detach_(), ser_num_list
 
 
 if __name__ == '__main__':
     import numpy as np
-    from GenetateBigGraph import generate_big_graph
+    from GenetateBigGraph import generate_big_graph, generate_common_graph
     from TourGraphCreation import single_car_tour_graph
 
     torch.set_printoptions(threshold=np.nan)  # show all data
-    graph, requests = generate_big_graph(node_num=10, lower_bound=1, high_bound=100, request_num=3, depot_num=1)
-    graph = single_car_tour_graph(graph, requests)
+    common_graph = generate_common_graph(node_num=10, lower_bound=1, high_bound=100)
+    graph, requests = generate_big_graph(common_graph, node_num=10, request_num=3, depot_num=1)
+    graph, car = single_car_tour_graph(graph, requests)
     x_all, mu_all, ser_num_list = Struct2Vec(graph)
-    print(x_all)
-    print(mu_all)
+    print(x_all[0])
+    print(mu_all[0])
+    print(mu_all.shape)  # 9 * 128
     print(ser_num_list)
